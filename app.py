@@ -1,23 +1,21 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-# Configuración de la página
 st.set_page_config(page_title="Tablero PEM - El Calafate", layout="wide")
 
-# 1. EL CARGADOR DE ARCHIVOS AHORA ESTÁ ESCONDIDO EN EL PANEL LATERAL
 with st.sidebar:
     st.title("⚙️ Generador de Tablero")
-    st.write("Arrastrá el PDF del mes aquí para actualizar los datos.")
-    archivo_pdf = st.file_uploader("", type="pdf")
+    st.write("Arrastrá todos los PDFs necesarios aquí para actualizar los datos.")
+    # AHORA ACEPTA MÚLTIPLES ARCHIVOS
+    archivos_pdf = st.file_uploader("", type="pdf", accept_multiple_files=True)
     st.markdown("---")
     st.write("ℹ️ *Este panel es solo para vos. Tus compañeros verán el reporte limpio que descargues.*")
 
 st.title("📊 Actualizador de Tablero Comercial - Sucursal 1697")
 
-if archivo_pdf is not None:
-    st.success(f"✅ Archivo procesado correctamente. ¡Tablero generado!")
+if archivos_pdf:
+    st.success(f"✅ {len(archivos_pdf)} archivo(s) procesado(s) correctamente. ¡Tablero generado!")
     
-    # 2. EL HTML COMPLETO (CON LA TABLA RESTAURADA Y ADAPTADO A CELULARES)
     html_tablero = """
     <!DOCTYPE html>
     <html lang="es">
@@ -149,7 +147,6 @@ if archivo_pdf is not None:
     </html>
     """
     
-    # 3. EL NUEVO BOTÓN PARA DESCARGAR (Fácil para compartir)
     st.download_button(
         label="📥 Descargar Reporte Listo (Para enviar por WhatsApp/Mail)",
         data=html_tablero,
@@ -158,9 +155,7 @@ if archivo_pdf is not None:
     )
     
     st.markdown("---")
-    
-    # Renderizado del tablero con altura completa
     components.html(html_tablero, height=1100, scrolling=True)
 
 else:
-    st.info("👈 Esperando informe... Subí el PDF en el panel de la izquierda para comenzar.")
+    st.info("👈 Esperando informes... Subí los PDFs en el panel de la izquierda para comenzar.")
